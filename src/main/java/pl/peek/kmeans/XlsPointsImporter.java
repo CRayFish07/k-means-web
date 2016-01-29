@@ -12,8 +12,19 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+/**
+ * Converter translates given XLS file values into point coordinates.
+ */
 public class XlsPointsImporter {
 
+    /**
+     * Algorithm, in each row, searches for two first entries of valid numbers and translates them
+     * into pair of double values (x, y) and composes a list of points containing parsed values.
+     *
+     * @param o Stream of XLS file.
+     * @return List of coordinates wrapped into {@link Point} class.
+     * @throws IOException
+     */
     public static List<Point> convert(InputStream o) throws IOException {
         HSSFWorkbook workbook = new HSSFWorkbook(o);
         HSSFSheet sheet = workbook.getSheetAt(0);
@@ -52,5 +63,4 @@ public class XlsPointsImporter {
         }
         return points;
     }
-
 }
