@@ -1,9 +1,8 @@
 package pl.peek.kmeans.impl;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
-import static java.util.stream.Collectors.*;
+import static java.util.stream.Collectors.toMap;
 
 public class KMeans {
     private int clusterCount;
@@ -17,6 +16,8 @@ public class KMeans {
     private List<Cluster> clusters;
 
     private final DistanceMethod distanceMethod;
+
+    private final static int REPOSITION_LIMIT = 10;
 
     public KMeans() {
         this(0, Collections.emptyList());
@@ -38,14 +39,31 @@ public class KMeans {
     public void calculateClusters() {
         computeMinMax();
 
-        this.clusters = makeClusters(clusterCount);
-        clearClusters();
-        distributePoints();
+        this.clusters = makeClusters(clusterCount, points);
+        calculateCentroids();
 
-        while (calculateCentroids()) {
+        distributePoints();
+        boolean calc = true;
+        int repositions = 0;
+        while (calc) {
             clearClusters();
             distributePoints();
+            calc = calculateCentroids();
+            if (!calc && hasEmptyClusters() && repositions < REPOSITION_LIMIT) {
+                calc = true;
+                repositions++;
+                setRandomPosition(this.clusters.stream().filter(c -> c.getPoints().isEmpty())
+                        .findFirst().get());
+            }
         }
+    }
+
+    private boolean hasEmptyClusters() {
+        return hasEmptyClusters(this.clusters);
+    }
+
+    private boolean hasEmptyClusters(List<Cluster> clusters) {
+        return clusters.stream().anyMatch(c -> c.getPoints().isEmpty());
     }
 
     private void clearClusters() {
@@ -99,8 +117,20 @@ public class KMeans {
         return points.stream().map(Point::getY).max(Double::compareTo).orElse(0.0);
     }
 
-    private List<Cluster> makeClusters(int clusterCount) {
-        return initClusters(clusterCount);
+    private List<Cluster> makeClusters(int clusterCount, List<Point> points) {
+        if (clusterCount == 0) return Collections.emptyList();
+        List<Cluster> clusters = initClusters(clusterCount);
+        sharePointsBetweenClusters(clusters, points);
+        return clusters;
+    }
+
+    private void sharePointsBetweenClusters(List<Cluster> clusters, List<Point> points) {
+        int c = 0;
+        for (Point point : points) {
+            clusters.get(c).addPoint(point);
+            c++;
+            if (c + 1 >= clusterCount) c = 0;
+        }
     }
 
     private List<Cluster> initClusters(int n) {
@@ -110,15 +140,28 @@ public class KMeans {
     private List<Cluster> initClusters(int n, double minX, double minY, double maxX, double maxY) {
         List<Cluster> clusters = new ArrayList<>();
         if (n == 0) return clusters;
-        Random r = new Random();
-        double x;
-        double y;
         for (int i = 0; i < n; i++) {
-            x = minX + (maxX - minX) * r.nextDouble();
-            y = minY + (maxY - minY) * r.nextDouble();
-            clusters.add(new Cluster(new Point(x, y)));
+            Cluster cluster = new Cluster();
+            setRandomPosition(cluster);
+            clusters.add(cluster);
         }
         return clusters;
+    }
+
+    private void setRandomPosition(Cluster cluster) {
+        setRandomPosition(cluster, minX, minY, maxX, maxY);
+    }
+
+    private void setRandomPosition(Cluster cluster, double minX, double minY, double maxX, double
+            maxY) {
+        cluster.setCentroid(computeRandomPosition(minX, minY, maxX, maxY));
+    }
+
+    private Point computeRandomPosition(double minX, double minY, double maxX, double maxY) {
+        Random r = new Random();
+        return new Point(
+                minX + (maxX - minX) * r.nextDouble(), minY + (maxY - minY) * r.nextDouble()
+        );
     }
 
     private void distributePoints() {
