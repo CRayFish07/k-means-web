@@ -152,12 +152,12 @@ public class KMeans {
         setRandomPosition(cluster, minX, minY, maxX, maxY);
     }
 
-    private void setRandomPosition(Cluster cluster, double minX, double minY, double maxX, double
-            maxY) {
+    public static void setRandomPosition(Cluster cluster, double minX, double minY, double maxX,
+                                         double maxY) {
         cluster.setCentroid(computeRandomPosition(minX, minY, maxX, maxY));
     }
 
-    private Point computeRandomPosition(double minX, double minY, double maxX, double maxY) {
+    public static Point computeRandomPosition(double minX, double minY, double maxX, double maxY) {
         Random r = new Random();
         return new Point(
                 minX + (maxX - minX) * r.nextDouble(), minY + (maxY - minY) * r.nextDouble()
