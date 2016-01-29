@@ -98,13 +98,13 @@ public class KMeansTest {
                 new Cluster(0.9, 0.1)
         );
         KMeans kMeans = new KMeans();
-        kMeans.distributePoints(clusters, this.squarePoints);
+        KMeans.distributePoints(clusters, this.squarePoints, new EuclidDistanceMethod());
         //each cluster should have one point
         clusters.forEach(c -> assertTrue(c.getPoints().size() == 1));
         clusters.forEach(Cluster::clearPoints);
         squarePoints.set(0, new Point(0.0, 1.0)); //align second point to one cluster
         //two points should go to one cluster
-        kMeans.distributePoints(clusters, this.squarePoints);
+        KMeans.distributePoints(clusters, this.squarePoints, new EuclidDistanceMethod());
         assertTrue(clusters.get(1).getPoints().size() == 2);
     }
 

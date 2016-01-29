@@ -4,6 +4,10 @@ import java.util.*;
 
 import static java.util.stream.Collectors.toMap;
 
+/**
+ * Class containing information about cluster represented by collection of {@link Cluster}
+ * objects, and points contained within space represented by {@link Point} objects.
+ */
 public class KMeans {
     private int clusterCount;
 
@@ -19,14 +23,32 @@ public class KMeans {
 
     private final static int REPOSITION_LIMIT = 10;
 
+    /**
+     * Default constructor. Does basically nothing.
+     */
     public KMeans() {
         this(0, Collections.emptyList());
     }
 
+    /**
+     * Object with default distance calculation implementation
+     * sqrt( (x0 - x)^2 + (y0 - y)^2 ).
+     *
+     * @param clusterCount number of clusters wanted
+     * @param points       collection of point in examined space.
+     */
     public KMeans(int clusterCount, List<Point> points) {
         this(clusterCount, points, new EuclidDistanceMethod());
     }
 
+
+    /**
+     * Object with given distance calculation implementation.
+     *
+     * @param clusterCount   number of clusters wanted
+     * @param points         collection of point in examined space
+     * @param distanceMethod provided distance calculation algorithm
+     */
     public KMeans(int clusterCount, List<Point> points, DistanceMethod distanceMethod) {
         if (clusterCount > points.size())
             throw new IllegalArgumentException("To many clusters required for given point list.");
@@ -36,6 +58,9 @@ public class KMeans {
         this.distanceMethod = distanceMethod;
     }
 
+    /**
+     * Assigns points to clusters based on distance between cluster and point.
+     */
     public void calculateClusters() {
         computeMinMax();
 
@@ -74,6 +99,12 @@ public class KMeans {
         return calculateCentroids(this.clusters);
     }
 
+    /**
+     * Calculate centroid based on points contained in cluster.
+     *
+     * @param clusters List of clusters to have centroids calculated.
+     * @return True if centroids were different than those made.
+     */
     public static boolean calculateCentroids(List<Cluster> clusters) {
         Map<Cluster, Point> centroids = clusters.stream()
                 .collect(toMap(c -> c, KMeans::calculateCentroid));
@@ -83,6 +114,12 @@ public class KMeans {
         return ret;
     }
 
+    /**
+     * Calculates centroid based on points given cluster contains.
+     *
+     * @param cluster Cluster
+     * @return Point with calculated x, y values.
+     */
     public static Point calculateCentroid(Cluster cluster) {
         double sumX = cluster.getPoints().stream().mapToDouble(Point::getX).sum();
         double sumY = cluster.getPoints().stream().mapToDouble(Point::getY).sum();
@@ -152,6 +189,15 @@ public class KMeans {
         setRandomPosition(cluster, minX, minY, maxX, maxY);
     }
 
+    /**
+     * Set cluster centroid based on new values generated randomly between given bounds.
+     *
+     * @param cluster {@link Cluster}
+     * @param minX    minimal x value
+     * @param minY    minimal y value
+     * @param maxX    maximal x value
+     * @param maxY    maximal y value
+     */
     public static void setRandomPosition(Cluster cluster, double minX, double minY, double maxX,
                                          double maxY) {
         cluster.setCentroid(computeRandomPosition(minX, minY, maxX, maxY));
@@ -168,10 +214,17 @@ public class KMeans {
         distributePoints(this.clusters, this.points);
     }
 
-    public void distributePoints(List<Cluster> clusters, List<Point> points) {
+    private void distributePoints(List<Cluster> clusters, List<Point> points) {
         distributePoints(clusters, points, this.distanceMethod);
     }
 
+    /**
+     * Assigns points to nearest cluster based on given distance method.
+     *
+     * @param clusters List of {@link Cluster} objects.
+     * @param points   List of {@link Point} objects to distribute
+     * @param calc     Distance method
+     */
     public static void distributePoints(List<Cluster> clusters, List<Point> points,
                                         DistanceMethod calc) {
         points.forEach(p -> clusters
@@ -180,10 +233,26 @@ public class KMeans {
                 .ifPresent(cluster -> cluster.addPoint(p)));
     }
 
+    /**
+     * Calulate distance between {@link Cluster} point and given {@link Point} object.
+     *
+     * @param cluster {@link Cluster} object
+     * @param point   {@link Point} object
+     * @param method  Distance calculation implementation
+     * @return Distance between points
+     */
     public static Double distance(Cluster cluster, Point point, DistanceMethod method) {
         return distance(cluster.getCentroid(), point, method);
     }
 
+    /**
+     * Distance between points based on given method.
+     *
+     * @param p0     First {@link Point} object
+     * @param p1     Second {@link Point} object
+     * @param method Distance method
+     * @return Distance as {@link Double} value
+     */
     public static Double distance(Point p0, Point p1, DistanceMethod method) {
         return method.calcDistance(p0, p1);
     }
@@ -192,18 +261,30 @@ public class KMeans {
         return clusters;
     }
 
+    /**
+     * @return Minimal X value in point space
+     */
     public Double getMinX() {
         return minX;
     }
 
+    /**
+     * @return Maximal X value in point space
+     */
     public Double getMaxX() {
         return maxX;
     }
 
+    /**
+     * @return Minimal Y value in point space
+     */
     public Double getMinY() {
         return minY;
     }
 
+    /**
+     * @return Maximal Y value in point space
+     */
     public Double getMaxY() {
         return maxY;
     }
