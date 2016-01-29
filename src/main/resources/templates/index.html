@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>KMeans</title>
+</head>
+<body>
+<form action="#" th:action="@{/upload}" th:object="${uploadForm}" method="post"
+      enctype="multipart/form-data">
+    <table>
+        <tbody>
+        <tr>
+            <td>
+                <label for="count">Cluster count: </label>
+            </td>
+            <td>
+                <input id="count" type="number" th:field="*{count}"/>
+            </td>
+            <td>
+                <p th:if="${#fields.hasErrors('count')}" th:errors="*{count}"></p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label for="file">File: </label>
+            </td>
+            <td>
+                <input type="file" id="file" th:field="*{file}"/>
+            </td>
+            <td>
+                <p th:if="${#fields.hasErrors('file')}" th:errors="*{file}"></p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label for="method">Distance method: </label>
+            </td>
+            <td>
+                <select th:field="*{method}" id="method">
+                    <option value="MET_A">sqrt( (x0 - x)^2 + (y0 - y)^2 )</option>
+                    <option value="MET_B">min( abs(x0 - x), abs(y0 - y) )</option>
+                </select>
+            </td>
+            <td>
+                <p th:if="${#fields.hasErrors('method')}" th:errors="*{method}"></p>
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>
+                <button type="submit">Upload</button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</form>
+</body>
+</html>

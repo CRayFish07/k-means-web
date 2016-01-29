@@ -23,4 +23,9 @@ public class Point {
         return getX().compareTo(point.getX()) == 0 &&
                 getY().compareTo(point.getY()) == 0;
     }
+
+    @Override
+    public String toString() {
+        return String.format("Point (%d, %d)", (long) x, (long) y);
+    }
 }
