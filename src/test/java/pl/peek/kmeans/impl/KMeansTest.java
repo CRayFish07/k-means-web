@@ -97,7 +97,6 @@ public class KMeansTest {
                 new Cluster(0.9, 0.9),
                 new Cluster(0.9, 0.1)
         );
-        KMeans kMeans = new KMeans();
         KMeans.distributePoints(clusters, this.squarePoints, new EuclidDistanceMethod());
         //each cluster should have one point
         clusters.forEach(c -> assertTrue(c.getPoints().size() == 1));
@@ -147,7 +146,7 @@ public class KMeansTest {
     @Test
     public void testClustering() throws Exception {
         int emptyClusters = 0;
-        int iterations = 1000;
+        int iterations = 10;
         for (int i = 0; i < iterations; i++) {
             List<Point> points = new ArrayList<>();
             Collections.addAll(

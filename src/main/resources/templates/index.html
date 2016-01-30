@@ -5,6 +5,14 @@
     <title>KMeans</title>
 </head>
 <body>
+<div th:fragment="nav">
+    <h2>Menu:</h2>
+    <ul>
+        <li><a th:href="@{/}">Upload</a></li>
+        <li><a th:href="@{/results}">Results</a></li>
+    </ul>
+</div>
+<h2>Uplad:</h2>
 <form action="#" th:action="@{/upload}" th:object="${uploadForm}" method="post"
       enctype="multipart/form-data">
     <table>

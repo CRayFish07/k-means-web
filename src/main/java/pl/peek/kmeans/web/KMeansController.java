@@ -2,13 +2,18 @@ package pl.peek.kmeans.web;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import pl.peek.kmeans.web.form.UploadForm;
+import pl.peek.kmeans.web.model.KMResult;
+import pl.peek.kmeans.web.repository.KMResultRepository;
 
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.io.IOException;
 
@@ -16,10 +21,12 @@ import java.io.IOException;
 public class KMeansController {
 
     private final KMeansService kMeansService;
+    private final KMResultRepository kmResultRepository;
 
     @Autowired
-    public KMeansController(KMeansService kMeansService) {
+    public KMeansController(KMeansService kMeansService, KMResultRepository kmResultRepository) {
         this.kMeansService = kMeansService;
+        this.kmResultRepository = kmResultRepository;
     }
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
@@ -45,14 +52,20 @@ public class KMeansController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        redirectAttributes.addFlashAttribute("kmResult", kmResult);
-        return "redirect:/results"; //TODO
+        if (kmResult == null) return "index";
+        return "redirect:/result?id=" + kmResult.getId().intValue();
+    }
+
+    @RequestMapping(value = "/result", method = RequestMethod.GET)
+    public String results(@RequestParam("id") Long resultId, Model model) {
+        KMResult one = kmResultRepository.findOne(resultId);
+        model.addAttribute("result", one);
+        return "result";
     }
 
     @RequestMapping(value = "/results", method = RequestMethod.GET)
-    public String results(@ModelAttribute KMResult kmResult) {
-
+    public String results(Model model) {
+        model.addAttribute("results", kmResultRepository.findAll());
         return "results";
     }
-
 }

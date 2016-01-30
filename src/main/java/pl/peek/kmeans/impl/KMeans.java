@@ -65,9 +65,6 @@ public class KMeans {
         computeMinMax();
 
         this.clusters = makeClusters(clusterCount, points);
-        calculateCentroids();
-
-        distributePoints();
         boolean calc = true;
         int repositions = 0;
         while (calc) {

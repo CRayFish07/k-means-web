@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>KMeans</title>
+</head>
+<body>
+<div th:replace="index :: nav"></div>
+<h1>Result:</h1>
+
+<div th:if="${result != null}">
+    <table th:each="cluster : ${result.clusters}">
+        <tr>
+            <td th:text="'[' + ${cluster.x} + ' : ' + ${cluster.y} + ']'">
+            </td>
+            <td>
+                <ul th:each="point : ${cluster.points}">
+                    <li th:text="'x: ' + ${point.x} + ' y: ' + ${point.y}"></li>
+                </ul>
+            </td>
+        </tr>
+    </table>
+</div>
+</body>
+</html>

@@ -5,10 +5,13 @@
     <title>KMeans</title>
 </head>
 <body>
-<div th:if="${kmResult != null}">
-    <ul th:each="cluster : ${kmResult.clusters}">
-        <li th:text="${cluster.getPoints().size()}"></li>
-    </ul>
-</div>
+<div th:replace="index :: nav"></div>
+<h1>Results: </h1>
+<ul th:each="res : ${results}">
+    <li><a
+            th:href="@{/result(id=${res.id})}"><span
+            th:text="'[' + ${res.id} + ']'"></span></a>
+    </li>
+</ul>
 </body>
 </html>
