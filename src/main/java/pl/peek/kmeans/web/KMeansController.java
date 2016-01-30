@@ -13,7 +13,6 @@ import pl.peek.kmeans.web.model.KMResult;
 import pl.peek.kmeans.web.repository.KMResultRepository;
 
 import javax.validation.Valid;
-import java.io.IOException;
 
 @Controller
 public class KMeansController {
