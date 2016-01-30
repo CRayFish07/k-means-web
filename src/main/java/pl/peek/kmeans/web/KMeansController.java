@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -13,7 +12,6 @@ import pl.peek.kmeans.web.form.UploadForm;
 import pl.peek.kmeans.web.model.KMResult;
 import pl.peek.kmeans.web.repository.KMResultRepository;
 
-import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.io.IOException;
 
@@ -46,12 +44,7 @@ public class KMeansController {
             return "index";
         }
 
-        KMResult kmResult = null;
-        try {
-            kmResult = kMeansService.calculateResult(uploadForm);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        KMResult kmResult = kMeansService.calculateResult(uploadForm);
         if (kmResult == null) return "index";
         return "redirect:/result?id=" + kmResult.getId().intValue();
     }

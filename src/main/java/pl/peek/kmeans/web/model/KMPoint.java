@@ -15,10 +15,10 @@ public class KMPoint {
     private Long id;
 
     @Column(nullable = false)
-    private Double x;
+    private Double x = 0.0;
 
     @Column(nullable = false)
-    private Double y;
+    private Double y = 0.0;
 
     public KMPoint() {
     }

@@ -14,10 +14,10 @@ public class KMCluster {
     private Long id;
 
     @Column(nullable = false)
-    private Double x;
+    private Double x = 0.0;
 
     @Column(nullable = false)
-    private Double y;
+    private Double y = 0.0;
 
     @OneToMany(fetch = FetchType.EAGER)
     private List<KMPoint> points;
@@ -26,8 +26,10 @@ public class KMCluster {
     }
 
     public KMCluster(Cluster cluster) {
-        this.x = cluster.getCentroid().getX();
-        this.y = cluster.getCentroid().getY();
+        if (!Double.isNaN(cluster.getCentroid().getX()))
+            this.x = cluster.getCentroid().getX();
+        if (!Double.isNaN(cluster.getCentroid().getY()))
+            this.y = cluster.getCentroid().getY();
 
         this.points = cluster.getPoints().stream().map(KMPoint::new).collect(Collectors.toList());
     }

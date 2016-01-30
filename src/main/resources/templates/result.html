@@ -9,17 +9,14 @@
 <h1>Result:</h1>
 
 <div th:if="${result != null}">
-    <table th:each="cluster : ${result.clusters}">
-        <tr>
-            <td th:text="'[' + ${cluster.x} + ' : ' + ${cluster.y} + ']'">
-            </td>
-            <td>
-                <ul th:each="point : ${cluster.points}">
-                    <li th:text="'x: ' + ${point.x} + ' y: ' + ${point.y}"></li>
-                </ul>
-            </td>
-        </tr>
-    </table>
+    <div th:each="cluster : ${result.clusters}">
+        <h3 th:text="'Cluster id: ' + ${cluster.id}"></h3>
+        <h4 th:text="'x: ' + ${cluster.x}"></h4>
+        <h4 th:text="'y: ' + ${cluster.y}"></h4>
+        <ul th:each="point : ${cluster.points}">
+            <li th:text="'x: ' + ${point.x} + ' y: ' + ${point.y}"></li>
+        </ul>
+    </div>
 </div>
 </body>
 </html>
