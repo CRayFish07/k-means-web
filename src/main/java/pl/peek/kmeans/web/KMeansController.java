@@ -45,6 +45,7 @@ public class KMeansController {
 
         KMResult kmResult = kMeansService.calculateResult(uploadForm);
         if (kmResult == null) return "index";
+        kmResult = kMeansService.save(kmResult);
         return "redirect:/result?id=" + kmResult.getId().intValue();
     }
 

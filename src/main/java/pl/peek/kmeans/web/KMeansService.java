@@ -49,18 +49,14 @@ public class KMeansService {
                     .convert(new ByteArrayInputStream(uploadForm.getFile().getBytes()));
             kMeans = new KMeans(uploadForm.getCount(), points, method);
             kMeans.calculateClusters();
-            save(kMeans);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        if (kMeans != null)
-            return save(kMeans);
-        return null;
+        return new KMResult(kMeans.getClusters().stream().map(KMCluster::new)
+                .collect(toList()));
     }
 
-    public KMResult save(KMeans kMeans) {
-        KMResult kmResult = new KMResult(kMeans.getClusters().stream().map(KMCluster::new)
-                .collect(toList()));
+    public KMResult save(KMResult kmResult) {
         kmResult.getClusters().forEach(kmCluster -> {
             kmPointRepository.save(kmCluster.getPoints());
             kmClusterRepository.save(kmCluster);
